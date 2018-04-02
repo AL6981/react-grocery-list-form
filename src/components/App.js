@@ -6,32 +6,57 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      groceries: [
-        { id: 1, name: "Oranges" },
-        { id: 2, name: "Bananas" },
-        { id: 3, name: "Bread" }
-      ]
+      groceries: [ ],
+      name: ''
     }
     this.handleFormSubmit = this.handleFormSubmit.bind(this)
     this.handleDeleteClick = this.handleDeleteClick.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleFormClear = this.handleFormClear.bind(this)
   }
 
   handleFormSubmit(event) {
     event.preventDefault()
-    alert('Form was submitted')
+    let newId = this.state.groceries.length + 1
+    let newGrocery = {
+      id: newId,
+      name: this.state.name
+    }
+    let newGroceries = this.state.groceries.concat(newGrocery)
+    this.setState({
+      groceries: newGroceries,
+      name: ''
+    })
+    this.handleFormClear(event)
   }
 
-  handleDeleteClick(event) {
+  handleDeleteClick(id) {
+    let newGroceries = this.state.groceries.filter(grocery => {
+      return grocery.id !== id
+    })
+    this.setState({ groceries: newGroceries })
     alert('Delete was clicked')
   }
 
+  handleChange(event) {
+    let newName = event.target.value
+    this.setState({ name: newName})
+  }
+
+  handleFormClear(event) {
+    event.preventDefault()
+    this.setState({ name: ''})
+  }
+
   render() {
-    // console.log("App's state name value: ", this.state.name)
+     console.log("App's state name value: ", this.state.name)
     return(
       <div>
         <h1>Grocery List React</h1>
         <GroceryForm
           handleFormSubmit={this.handleFormSubmit}
+          handleChange={this.handleChange}
+          name={this.state.name}
         />
         <GroceryList
           groceries={this.state.groceries}
